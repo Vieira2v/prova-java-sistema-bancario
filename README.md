@@ -50,15 +50,19 @@ curl -X POST http://localhost:8080/accounts \
     "name": "Nome",
     "cpf": "123.456.789-10"
   }'
+```
 
 ### Consultar saldo por ID da conta
 
+```bash
 curl -X 'GET' \
   'http://localhost:8080/v1/api/banking/system/balance/682f79e1301fe71481e78149' \
   -H 'accept: application/json'
+```
 
 ### Realizar Transferência
 
+```bash
 curl -X 'POST' \
   'http://localhost:8080/v1/api/banking/system/transaction' \
   -H 'accept: application/json' \
@@ -68,16 +72,22 @@ curl -X 'POST' \
   "destinationAccount": "529976",
   "value": 700
 }'
+```
 
 ### Listar transações de uma conta com paginação
 
+```bash
 curl -X GET "http://localhost:8080/transactions/1234567890?page=0&size=10"
+```
 
 ### Reverter uma transação pelo ID da transação
 
+```bash
 curl -X POST http://localhost:8080/reversed/transaction/abcdef1234567890
+```
 
 ### Gerar Relatório de Transações
 
+```bash
 curl -X GET http://localhost:8080/reports
-
+```
