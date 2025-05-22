@@ -37,6 +37,7 @@ http://localhost:8080/swagger-ui/index.html
 ```bash
 mvn clean install
 mvn spring-boot:run
+```
 
 ## Exemplos de Requisições
 
