@@ -41,24 +41,27 @@ mvn spring-boot:run
 ```bash
 curl -X POST http://localhost:8080/accounts \
 -H "Content-Type: application/json" \
--d '{
-  "accountNumber": "123456",
-  "ownerName": "Bruno",
-  "initialBalance": 1000
-}'
+-d '  {
+    "name": "Nome",
+    "cpf": "123.456.789-10"
+  }'
 
 ### Consultar saldo por ID da conta
 
-curl -X GET http://localhost:8080/balance/1234567890
+curl -X 'GET' \
+  'http://localhost:8080/v1/api/banking/system/balance/682f79e1301fe71481e78149' \
+  -H 'accept: application/json'
 
 ### Realizar Transferência
 
-curl -X POST http://localhost:8080/transactions \
--H "Content-Type: application/json" \
--d '{
-  "sourceAccount": "123456",
-  "destinationAccount": "654321",
-  "value": 250.00
+curl -X 'POST' \
+  'http://localhost:8080/v1/api/banking/system/transaction' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "sourceAccount": "937740",
+  "destinationAccount": "529976",
+  "value": 700
 }'
 
 ### Listar transações de uma conta com paginação
@@ -71,5 +74,5 @@ curl -X POST http://localhost:8080/reversed/transaction/abcdef1234567890
 
 ### Gerar Relatório de Transações
 
-curl -X GET http://localhost:8080/reports/transactions?startDate=2025-01-01&endDate=2025-05-22
+curl -X GET http://localhost:8080/reports
 
