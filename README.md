@@ -34,6 +34,10 @@ Foi desenvolvida com foco em boas práticas como:
 mvn clean install
 mvn spring-boot:run
 
+### Documentação da API
+
+http://localhost:8080/swagger-ui/index.html
+
 ## Exemplos de Requisições
 
 ### Criar Conta Bancária
