@@ -1,6 +1,6 @@
 # Sistema Bancário - API REST
 
-Sistema de gestão de notas fiscais e estoque desenvolvido com React e Spring Boot.
+Sistema de gestão de notas fiscais e estoque desenvolvido com Spring Boot.
 
 ## Descrição do Projeto
 
