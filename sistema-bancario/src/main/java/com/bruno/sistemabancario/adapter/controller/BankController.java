@@ -4,6 +4,7 @@ import com.bruno.sistemabancario.adapter.dtos.request.AccountOpeningDTO;
 import com.bruno.sistemabancario.adapter.dtos.request.TransactionDTO;
 import com.bruno.sistemabancario.adapter.dtos.response.AccountDTO;
 import com.bruno.sistemabancario.adapter.dtos.response.BalanceDTO;
+import com.bruno.sistemabancario.adapter.dtos.response.ReportDTO;
 import com.bruno.sistemabancario.adapter.dtos.response.TransactionsUserDTO;
 import com.bruno.sistemabancario.domain.model.Transaction;
 import com.bruno.sistemabancario.domain.service.BankService;
@@ -13,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -48,7 +50,7 @@ public class BankController {
                     @ApiResponse(description="Internal Error", responseCode="500", content=@Content)
             })
     @PostMapping("/register")
-    public ResponseEntity<AccountDTO> createAccount(@RequestBody AccountOpeningDTO request) {
+    public ResponseEntity<AccountDTO> createAccount(@RequestBody @Valid AccountOpeningDTO request) {
         var created = bankService.createAccount(request);
 
         return ResponseEntity.ok(created);
@@ -91,7 +93,7 @@ public class BankController {
                     @ApiResponse(description="Internal Error", responseCode="500", content=@Content)
             })
     @PostMapping("/transaction")
-    public ResponseEntity<String> makeTransaction(@RequestBody TransactionDTO request) {
+    public ResponseEntity<String> makeTransaction(@RequestBody @Valid TransactionDTO request) {
         var transaction = bankService.moneyTransaction(request);
 
         return ResponseEntity.ok(transaction);
@@ -141,5 +143,25 @@ public class BankController {
     @PostMapping("/reversed/transaction/{id}")
     public ResponseEntity<String> reverseTransfer(@PathVariable(value = "id") String id) {
         return ResponseEntity.ok(bankService.transactionReversal(id));
+    }
+
+    @Operation(summary="Report",
+            description="Bank Report",
+            tags={"Banking System"},
+            responses={
+                    @ApiResponse(description="Success", responseCode="200",
+                            content={
+                                    @Content(
+                                            mediaType="application/json"
+                                    )
+                            }),
+                    @ApiResponse(description="Bad Request", responseCode="400", content=@Content),
+                    @ApiResponse(description="Unauthorized", responseCode="401", content=@Content),
+                    @ApiResponse(description="Not Found", responseCode="404", content=@Content),
+                    @ApiResponse(description="Internal Error", responseCode="500", content=@Content)
+            })
+    @GetMapping("/report")
+    public ReportDTO reportBank() {
+        return bankService.bankReport();
     }
 }

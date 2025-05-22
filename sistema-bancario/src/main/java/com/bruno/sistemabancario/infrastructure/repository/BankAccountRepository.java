@@ -15,4 +15,6 @@ public interface BankAccountRepository extends MongoRepository<BankAccount, Stri
 
     @Query(value = "{ 'accountNumber': ?0 }")
     Optional<BankAccount> findByAccountNumber(String accountNumber);
+
+    long count();
 }

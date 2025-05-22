@@ -4,6 +4,7 @@ import com.bruno.sistemabancario.adapter.dtos.request.AccountOpeningDTO;
 import com.bruno.sistemabancario.adapter.dtos.request.TransactionDTO;
 import com.bruno.sistemabancario.adapter.dtos.response.AccountDTO;
 import com.bruno.sistemabancario.adapter.dtos.response.BalanceDTO;
+import com.bruno.sistemabancario.adapter.dtos.response.ReportDTO;
 import com.bruno.sistemabancario.adapter.dtos.response.TransactionsUserDTO;
 import com.bruno.sistemabancario.domain.exceptions.BadRequest;
 import com.bruno.sistemabancario.domain.exceptions.ResourceNotFoundException;
@@ -15,6 +16,10 @@ import com.bruno.sistemabancario.infrastructure.repository.TransactionRepository
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.bson.Document;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -28,7 +33,10 @@ public class BankService {
     private BankAccountRepository accountRepository;
 
     @Autowired
-    TransactionRepository transactionRepository;
+    private TransactionRepository transactionRepository;
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     public AccountDTO createAccount(AccountOpeningDTO request) {
         var entity = DozerMapper.parseObject(request, BankAccount.class);
@@ -126,5 +134,32 @@ public class BankService {
         } else {
             throw new BadRequest("Transaction is not approved or already reversed.");
         }
+    }
+
+    public ReportDTO bankReport() {
+        ReportDTO report = new ReportDTO();
+
+        report.setTotalAccounts((int) accountRepository.count());
+        report.setTotalTransactions((int) transactionRepository.count());
+        report.setTotalAmountMoved(getTotalTransactionValue());
+
+        return report;
+    }
+
+    private BigDecimal getTotalTransactionValue() {
+        var aggregation = Aggregation.newAggregation(
+                Aggregation.match(Criteria.where("status").in("APPROVED", "REVERSED")),
+                Aggregation.group().sum("value").as("totalValue")
+        );
+
+        var result = mongoTemplate.aggregate(aggregation, "transactions", Document.class).getUniqueMappedResult();
+
+        if (result != null) {
+            Number totalValueNumber = result.get("totalValue", Number.class);
+            if (totalValueNumber != null) {
+                return new BigDecimal(totalValueNumber.toString());
+            }
+        }
+        return BigDecimal.ZERO;
     }
 }

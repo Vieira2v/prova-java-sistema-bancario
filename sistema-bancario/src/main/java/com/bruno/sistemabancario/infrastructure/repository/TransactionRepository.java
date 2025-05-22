@@ -13,4 +13,6 @@ public interface TransactionRepository extends MongoRepository<Transaction, Stri
 
     @Query("{ $or: [ { 'sourceAccount': ?0 }, { 'destinationAccount': ?0 } ] }")
     Page<Transaction> findAllByAccountNumber(String accountNumber, Pageable pageable);
+
+    long count();
 }
