@@ -54,7 +54,7 @@ class BankServiceTests {
 	}
 
 	@Test
-	void testCreateAccountShouldSetAutomaticFieldsCorrectly() {
+	void testCreateAccount() {
 		AccountOpeningDTO request = new AccountOpeningDTO();
 		request.setName("João Silva");
 		request.setCpf("12345678901");
@@ -78,7 +78,7 @@ class BankServiceTests {
 	}
 
 	@Test
-	void testCheckBalanceByIDWhenIdExistsShouldReturnBalance() {
+	void testCheckBalanceByID() {
 		String id = "abc123";
 		BankAccount account = new BankAccount();
 		account.setId(id);
@@ -95,7 +95,7 @@ class BankServiceTests {
 	}
 
 	@Test
-	void testCheckBalanceByIDWhenIdDoesNotExistShouldThrowException() {
+	void testCheckBalanceByIDWhenIdDoesNotExist() {
 		String id = "4134125";
 		when(accountRepository.findById(id)).thenReturn(Optional.empty());
 
@@ -139,7 +139,7 @@ class BankServiceTests {
 	}
 
 	@Test
-	void testMoneyTransactionThrowsBadRequestWhenInsufficientBalance() {
+	void testMoneyTransactionBadRequestWhenInsufficientBalance() {
 		TransactionDTO request = new TransactionDTO();
 		request.setSourceAccount("123456");
 		request.setDestinationAccount("654321");
@@ -162,7 +162,7 @@ class BankServiceTests {
 	}
 
 	@Test
-	void testMoneyTransactionThrowsExceptionWhenSourceAccountNotFound() {
+	void testMoneyTransactionExceptionWhenSourceAccountNotFound() {
 		TransactionDTO request = new TransactionDTO();
 		request.setSourceAccount("123456");
 		request.setDestinationAccount("654321");
@@ -181,7 +181,7 @@ class BankServiceTests {
 	}
 
 	@Test
-	void testMoneyTransactionThrowsExceptionWhenDestinationAccountNotFound() {
+	void testMoneyTransactionExceptionWhenDestinationAccountNotFound() {
 		TransactionDTO request = new TransactionDTO();
 		request.setSourceAccount("123456");
 		request.setDestinationAccount("654321");
@@ -205,7 +205,7 @@ class BankServiceTests {
 	}
 
 	@Test
-	void testListOfTransactionsSpecificAccountReturnsMappedPage() {
+	void testListOfTransactionsSpecificAccount() {
 		String accountNumber = "123456";
 		Pageable pageable = PageRequest.of(0, 10);
 
@@ -241,7 +241,7 @@ class BankServiceTests {
 	}
 
 	@Test
-	void testListOfTransactionsSpecificAccountThrowsWhenAccountNotFound() {
+	void testListOfTransactionsSpecificAccountWhenAccountNotFound() {
 		String accountNumber = "123456";
 		Pageable pageable = PageRequest.of(0, 10);
 

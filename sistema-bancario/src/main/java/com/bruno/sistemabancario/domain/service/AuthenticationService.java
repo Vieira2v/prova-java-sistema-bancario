@@ -33,8 +33,9 @@ public class AuthenticationService {
     private SecurityConfig securityConfig;
 
     public ResponseEntity<String> createUser(UserRequest userRequest) {
+        if (userRequest == null) throw  new IllegalArgumentException();
+
         var user = DozerMapper.parseObject(userRequest, User.class);
-        if (user == null) throw  new IllegalArgumentException();
 
         user.setUsername(userRequest.getUsername());
         securityConfig.passwordEncoder().encode(user.getPassword());
