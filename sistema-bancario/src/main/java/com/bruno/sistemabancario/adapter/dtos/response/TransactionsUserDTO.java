@@ -8,6 +8,7 @@ import java.time.LocalDate;
 @Data
 public class TransactionsUserDTO {
 
+    private String id;
     private String sourceAccount;
     private String destinationAccount;
     private BigDecimal value;

@@ -12,5 +12,5 @@ public class AccountOpeningDTO {
 
     @NotBlank(message = "CPF is required")
     @Pattern(regexp = "\\d{11}", message = "CPF must contain 11 digits")
-    private String CPF;
+    private String cpf;
 }

@@ -39,9 +39,10 @@ public class BankService {
     private MongoTemplate mongoTemplate;
 
     public AccountDTO createAccount(AccountOpeningDTO request) {
+
         var entity = DozerMapper.parseObject(request, BankAccount.class);
         entity.setName(request.getName());
-        entity.setCPF(request.getCPF());
+        entity.setCpf(request.getCpf());
         entity.setOpeningDate(LocalDate.now());
         int randomAccountNumber = ThreadLocalRandom.current().nextInt(100000, 1000000);
         entity.setAccountNumber(String.valueOf(randomAccountNumber));

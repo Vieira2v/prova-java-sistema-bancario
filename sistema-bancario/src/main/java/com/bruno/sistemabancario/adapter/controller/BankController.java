@@ -6,7 +6,6 @@ import com.bruno.sistemabancario.adapter.dtos.response.AccountDTO;
 import com.bruno.sistemabancario.adapter.dtos.response.BalanceDTO;
 import com.bruno.sistemabancario.adapter.dtos.response.ReportDTO;
 import com.bruno.sistemabancario.adapter.dtos.response.TransactionsUserDTO;
-import com.bruno.sistemabancario.domain.model.Transaction;
 import com.bruno.sistemabancario.domain.service.BankService;
 import com.bruno.sistemabancario.domain.service.PaginationService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -63,7 +62,8 @@ public class BankController {
                     @ApiResponse(description="Success", responseCode="200",
                             content={
                                     @Content(
-                                            mediaType="application/json"
+                                            mediaType="application/json",
+                                            array=@ArraySchema(schema=@Schema(implementation= BalanceDTO.class))
                                     )
                             }),
                     @ApiResponse(description="Bad Request", responseCode="400", content=@Content),
@@ -83,8 +83,7 @@ public class BankController {
                     @ApiResponse(description="Success", responseCode="200",
                             content={
                                     @Content(
-                                            mediaType="application/json",
-                                            array=@ArraySchema(schema=@Schema(implementation= Transaction.class))
+                                            mediaType="application/json"
                                     )
                             }),
                     @ApiResponse(description="Bad Request", responseCode="400", content=@Content),
@@ -106,7 +105,8 @@ public class BankController {
                     @ApiResponse(description="Success", responseCode="200",
                             content={
                                     @Content(
-                                            mediaType="application/json"
+                                            mediaType="application/json",
+                                            array=@ArraySchema(schema=@Schema(implementation= TransactionsUserDTO.class))
                                     )
                             }),
                     @ApiResponse(description="Bad Request", responseCode="400", content=@Content),

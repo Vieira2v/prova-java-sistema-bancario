@@ -21,7 +21,7 @@ public class BankAccount {
     private String id;
 
     private String name;
-    private String CPF;
+    private String cpf;
     private BigDecimal balance;
     private LocalDate openingDate;
     private String accountNumber;
