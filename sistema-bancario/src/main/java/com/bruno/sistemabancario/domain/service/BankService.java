@@ -142,6 +142,8 @@ public class BankService {
 
         report.setTotalAccounts((int) accountRepository.count());
         report.setTotalTransactions((int) transactionRepository.count());
+        report.setTotalTransactionsReversed(BigDecimal.valueOf(transactionRepository.countByStatus("REVERSED")));
+        report.setTotalTransactionsApproved(BigDecimal.valueOf(transactionRepository.countByStatus("APPROVED")));
         report.setTotalAmountMoved(getTotalTransactionValue());
 
         return report;
@@ -163,6 +165,4 @@ public class BankService {
         }
         return BigDecimal.ZERO;
     }
-
-
 }

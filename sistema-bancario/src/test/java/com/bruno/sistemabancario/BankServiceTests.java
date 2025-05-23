@@ -409,12 +409,15 @@ class BankServiceTests {
 	void testBankReport() {
 		long totalAccounts = 5L;
 		long totalTransactions = 20L;
+		long totalTransactionsApproved = 5L;
+		long totalTransactionsReversed = 2L;
 		BigDecimal totalAmountMoved = new BigDecimal("12345.67");
 
 		when(accountRepository.count()).thenReturn(totalAccounts);
 		when(transactionRepository.count()).thenReturn(totalTransactions);
+		when(transactionRepository.countByStatus("APPROVED")).thenReturn(totalTransactionsApproved);
+		when(transactionRepository.countByStatus("REVERSED")).thenReturn(totalTransactionsReversed);
 
-		// Simulando o metodo getTotalTransactionValue
 		Document aggregationResult = new Document();
 		aggregationResult.put("totalValue", totalAmountMoved);
 		AggregationResults<Document> aggregationResults = mock(AggregationResults.class);
@@ -425,8 +428,10 @@ class BankServiceTests {
 
 		ReportDTO report = accountService.bankReport();
 
-		assertEquals((int) totalAccounts, report.getTotalAccounts());
-		assertEquals((int) totalTransactions, report.getTotalTransactions());
+		assertEquals(totalAccounts, report.getTotalAccounts());
+		assertEquals(totalTransactions, report.getTotalTransactions());
+		assertEquals(BigDecimal.valueOf(totalTransactionsApproved), report.getTotalTransactionsApproved());
+		assertEquals(BigDecimal.valueOf(totalTransactionsReversed), report.getTotalTransactionsReversed());
 		assertEquals(totalAmountMoved, report.getTotalAmountMoved());
 
 		verify(accountRepository).count();

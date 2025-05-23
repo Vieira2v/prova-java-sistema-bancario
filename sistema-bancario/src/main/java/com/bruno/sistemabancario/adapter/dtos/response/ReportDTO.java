@@ -10,4 +10,6 @@ public class ReportDTO {
     private int totalAccounts;
     private int totalTransactions;
     private BigDecimal totalAmountMoved;
+    private BigDecimal totalTransactionsReversed;
+    private BigDecimal totalTransactionsApproved;
 }

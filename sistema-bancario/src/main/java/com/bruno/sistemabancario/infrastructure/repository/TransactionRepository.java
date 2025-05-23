@@ -15,4 +15,6 @@ public interface TransactionRepository extends MongoRepository<Transaction, Stri
     Page<Transaction> findAllByAccountNumber(String accountNumber, Pageable pageable);
 
     long count();
+
+    long countByStatus(String status);
 }
