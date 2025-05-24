@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.bruno.sistemabancario.adapter.dtos.response.TransactionsUserDTO;
-import com.bruno.sistemabancario.domain.service.PaginationService;
+import com.bruno.sistemabancario.application.service.PaginationService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;

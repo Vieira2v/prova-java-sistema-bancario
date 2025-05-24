@@ -1,7 +1,7 @@
-package com.bruno.sistemabancario.config;
+package com.bruno.sistemabancario.infrastructure.config;
 
-import com.bruno.sistemabancario.domain.service.security.JwtConfigurer;
-import com.bruno.sistemabancario.domain.service.security.JwtTokenProvider;
+import com.bruno.sistemabancario.application.service.security.JwtConfigurer;
+import com.bruno.sistemabancario.application.service.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,7 +31,7 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable).sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers( "/v1/api/banking/register", "/v1/api/banking/login", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers( "/v1/api/banking/register", "/v1/api/banking/login", "/v1/api/banking/refresh/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers( "/v1/api/banking/system/**").authenticated());
 
         JwtConfigurer jwtConfigurer = new JwtConfigurer(jwtTokenProvider);

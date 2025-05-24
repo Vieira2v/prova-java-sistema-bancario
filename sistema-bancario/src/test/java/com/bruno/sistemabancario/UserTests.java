@@ -4,21 +4,21 @@ import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.bruno.sistemabancario.adapter.dtos.request.UserRequest;
-import com.bruno.sistemabancario.config.SecurityConfig;
+import com.bruno.sistemabancario.application.ports.output.UserRepositoryPort;
+import com.bruno.sistemabancario.application.service.security.JwtTokenProvider;
+import com.bruno.sistemabancario.application.service.security.dtos.CredentialsLogin;
+import com.bruno.sistemabancario.application.service.security.dtos.Token;
+import com.bruno.sistemabancario.domain.utils.Code;
+import com.bruno.sistemabancario.domain.utils.CustomMessageResolver;
+import com.bruno.sistemabancario.infrastructure.config.SecurityConfig;
 import com.bruno.sistemabancario.domain.model.User;
-import com.bruno.sistemabancario.domain.service.AuthenticationService;
-import com.bruno.sistemabancario.domain.service.security.JwtTokenProvider;
-import com.bruno.sistemabancario.domain.service.security.dtos.CredentialsLogin;
-import com.bruno.sistemabancario.domain.service.security.dtos.Token;
-import com.bruno.sistemabancario.infrastructure.repository.UserRepository;
+import com.bruno.sistemabancario.application.service.AuthenticationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,13 +27,16 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootTest
-public class UserServiceTests {
+public class UserTests {
 
     @Mock
-    private UserRepository repository;
+    private UserRepositoryPort repository;
 
     @Mock
     private SecurityConfig securityConfig;
+
+    @Mock
+    private CustomMessageResolver customMessageResolver;
 
     @Mock
     private PasswordEncoder passwordEncoder;
@@ -66,11 +69,12 @@ public class UserServiceTests {
         when(passwordEncoder.encode("123456")).thenReturn("encodedPassword");
 
         when(repository.save(any(User.class))).thenReturn(userMapped);
+        when(customMessageResolver.getMessage(Code.USER_REGISTERED_SUCCESS))
+                .thenReturn("User registered successfully!");
 
-        ResponseEntity<String> response = authenticationService.createUser(userRequest);
+        String response = authenticationService.createUser(userRequest);
 
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals("User registered successfully!", response.getBody());
+        assertEquals("User registered successfully!", response);
 
         verify(repository).save(argThat(user ->
                 user.getUsername().equals("bruno") && user.getPassword().equals("encodedPassword")
@@ -109,10 +113,10 @@ public class UserServiceTests {
 
         when(jwtTokenProvider.createAccessToken("user1")).thenReturn(token);
 
-        ResponseEntity<Token> response = authenticationService.loginUser(login);
+        Token response = authenticationService.loginUser(login);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(token, response.getBody());
+        assertEquals(token, response);
+        assertEquals(token, response);
     }
 
     @Test
@@ -142,10 +146,10 @@ public class UserServiceTests {
         when(repository.findByUsername(username)).thenReturn(user);
         when(jwtTokenProvider.createRefreshToken(refreshToken)).thenReturn(token);
 
-        ResponseEntity<Token> response = authenticationService.refreshToken(username, refreshToken);
+        Token response = authenticationService.refreshToken(username, refreshToken);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(token, response.getBody());
+        assertEquals(token, response);
+        assertEquals(token, response);
     }
 
     @Test

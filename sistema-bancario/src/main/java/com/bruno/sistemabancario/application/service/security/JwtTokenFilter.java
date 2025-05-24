@@ -1,4 +1,4 @@
-package com.bruno.sistemabancario.domain.service.security;
+package com.bruno.sistemabancario.application.service.security;
 
 import com.bruno.sistemabancario.domain.exceptions.JwtTokenExpiredException;
 import jakarta.servlet.FilterChain;

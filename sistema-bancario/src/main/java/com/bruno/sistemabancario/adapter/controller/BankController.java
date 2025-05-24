@@ -6,8 +6,9 @@ import com.bruno.sistemabancario.adapter.dtos.response.AccountDTO;
 import com.bruno.sistemabancario.adapter.dtos.response.BalanceDTO;
 import com.bruno.sistemabancario.adapter.dtos.response.ReportDTO;
 import com.bruno.sistemabancario.adapter.dtos.response.TransactionsUserDTO;
-import com.bruno.sistemabancario.domain.service.BankService;
-import com.bruno.sistemabancario.domain.service.PaginationService;
+import com.bruno.sistemabancario.application.ports.input.BankUseCase;
+import com.bruno.sistemabancario.application.ports.input.PaginationUseCase;
+import com.bruno.sistemabancario.application.ports.input.TransferUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -27,10 +28,13 @@ import org.springframework.web.bind.annotation.*;
 public class BankController {
 
     @Autowired
-    private BankService bankService;
+    private BankUseCase bankUseCase;
 
     @Autowired
-    private PaginationService paginationService;
+    private TransferUseCase transferUseCase;
+
+    @Autowired
+    private PaginationUseCase paginationUseCase;
 
     @Operation(summary="Create account",
             description="Create account",
@@ -50,7 +54,7 @@ public class BankController {
             })
     @PostMapping("/register")
     public ResponseEntity<AccountDTO> createAccount(@RequestBody @Valid AccountOpeningDTO request) {
-        var created = bankService.createAccount(request);
+        var created = bankUseCase.createAccount(request);
 
         return ResponseEntity.ok(created);
     }
@@ -73,7 +77,7 @@ public class BankController {
             })
     @GetMapping("/balance/{id}")
     public ResponseEntity<BalanceDTO> balanceByID(@PathVariable(value = "id") String id) {
-        return  ResponseEntity.ok(bankService.checkBalanceByID(id));
+        return  ResponseEntity.ok(bankUseCase.checkBalanceByID(id));
     }
 
     @Operation(summary="Transaction",
@@ -93,7 +97,7 @@ public class BankController {
             })
     @PostMapping("/transaction")
     public ResponseEntity<String> makeTransaction(@RequestBody @Valid TransactionDTO request) {
-        var transaction = bankService.moneyTransaction(request);
+        var transaction = transferUseCase.moneyTransaction(request);
 
         return ResponseEntity.ok(transaction);
     }
@@ -119,9 +123,9 @@ public class BankController {
                                                                                                 @RequestParam(value = "page", defaultValue = "0") int page,
                                                                                                 @RequestParam(value = "size", defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<TransactionsUserDTO> responsePage = bankService.listOfTransactionsSpecificAccount(accountNumber, pageable);
+        Page<TransactionsUserDTO> responsePage = transferUseCase.listOfTransactionsSpecificAccount(accountNumber, pageable);
 
-        PagedModel<TransactionsUserDTO> pagedModel = paginationService.findAllTransactionByAccount(responsePage, accountNumber, page, size);
+        PagedModel<TransactionsUserDTO> pagedModel = paginationUseCase.findAllTransactionByAccount(responsePage, accountNumber, page, size);
         return  ResponseEntity.ok(pagedModel);
     }
 
@@ -142,7 +146,7 @@ public class BankController {
             })
     @PostMapping("/reversed/transaction/{id}")
     public ResponseEntity<String> reverseTransfer(@PathVariable(value = "id") String id) {
-        return ResponseEntity.ok(bankService.transactionReversal(id));
+        return ResponseEntity.ok(transferUseCase.transactionReversal(id));
     }
 
     @Operation(summary="Report",
@@ -162,6 +166,6 @@ public class BankController {
             })
     @GetMapping("/report")
     public ReportDTO reportBank() {
-        return bankService.bankReport();
+        return bankUseCase.bankReport();
     }
 }

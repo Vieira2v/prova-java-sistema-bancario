@@ -1,6 +1,5 @@
 package com.bruno.sistemabancario.domain.utils;
-
-import com.bruno.sistemabancario.domain.service.security.dtos.CredentialsLogin;
+import com.bruno.sistemabancario.application.service.security.dtos.CredentialsLogin;
 import org.springframework.stereotype.Component;
 
 @Component

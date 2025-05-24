@@ -1,4 +1,4 @@
-package com.bruno.sistemabancario.infrastructure.repository;
+package com.bruno.sistemabancario.infrastructure.adapter.persistence;
 
 import com.bruno.sistemabancario.domain.model.Transaction;
 import org.springframework.data.domain.Page;

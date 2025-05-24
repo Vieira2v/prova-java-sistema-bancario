@@ -17,7 +17,7 @@ Foi desenvolvida com foco em boas práticas como:
   ### Backend
 - Java Spring Boot
 - MongoDB
-- JPA/Hibernate
+- Spring Data MongoDB
 - Maven
 
 ## 🚀 Como Rodar a Aplicação

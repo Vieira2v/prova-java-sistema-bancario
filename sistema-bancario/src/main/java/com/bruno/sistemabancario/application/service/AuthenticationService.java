@@ -1,15 +1,17 @@
-package com.bruno.sistemabancario.domain.service;
+package com.bruno.sistemabancario.application.service;
 
 import com.bruno.sistemabancario.adapter.dtos.request.UserRequest;
-import com.bruno.sistemabancario.config.SecurityConfig;
+import com.bruno.sistemabancario.application.service.security.JwtTokenProvider;
+import com.bruno.sistemabancario.application.service.security.dtos.CredentialsLogin;
+import com.bruno.sistemabancario.application.service.security.dtos.Token;
+import com.bruno.sistemabancario.domain.utils.Code;
+import com.bruno.sistemabancario.domain.utils.CustomMessageResolver;
+import com.bruno.sistemabancario.infrastructure.config.SecurityConfig;
 import com.bruno.sistemabancario.domain.model.User;
-import com.bruno.sistemabancario.domain.service.security.JwtTokenProvider;
-import com.bruno.sistemabancario.domain.service.security.dtos.CredentialsLogin;
-import com.bruno.sistemabancario.domain.service.security.dtos.Token;
+import com.bruno.sistemabancario.application.ports.input.AuthenticationUseCase;
+import com.bruno.sistemabancario.application.ports.output.UserRepositoryPort;
 import com.bruno.sistemabancario.infrastructure.mapper.DozerMapper;
-import com.bruno.sistemabancario.infrastructure.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,10 +20,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AuthenticationService {
+public class AuthenticationService implements AuthenticationUseCase {
 
     @Autowired
-    private UserRepository repository;
+    private UserRepositoryPort UserRepositoryPort;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -30,9 +32,13 @@ public class AuthenticationService {
     private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
+    private CustomMessageResolver customMessageResolver;
+
+    @Autowired
     private SecurityConfig securityConfig;
 
-    public ResponseEntity<String> createUser(UserRequest userRequest) {
+    @Override
+    public String createUser(UserRequest userRequest) {
         if (userRequest == null) throw  new IllegalArgumentException();
 
         var user = DozerMapper.parseObject(userRequest, User.class);
@@ -41,12 +47,13 @@ public class AuthenticationService {
         securityConfig.passwordEncoder().encode(user.getPassword());
         user.setPassword(securityConfig.passwordEncoder().encode(user.getPassword()));
 
-        repository.save(user);
+        UserRepositoryPort.save(user);
 
-        return ResponseEntity.ok("User registered successfully!");
+        return customMessageResolver.getMessage(Code.USER_REGISTERED_SUCCESS);
     }
 
-    public ResponseEntity loginUser(CredentialsLogin login) {
+    @Override
+    public Token loginUser(CredentialsLogin login) {
         try {
             var username = login.getUsername();
             var password = login.getPassword();
@@ -54,22 +61,23 @@ public class AuthenticationService {
                     new UsernamePasswordAuthenticationToken(username, password)
             );
 
-            var user = repository.findByUsername(username);
+            var user = UserRepositoryPort.findByUsername(username);
 
             var tokenResponse = new Token();
             if (user != null) {
                 tokenResponse = jwtTokenProvider.createAccessToken(username);
             } else {
-                throw new UsernameNotFoundException("Username or password is incorrect");
+                throw new UsernameNotFoundException(customMessageResolver.getMessage(Code.USERNAME_OR_PASSWORD_INCORRECT));
             }
-            return ResponseEntity.ok(tokenResponse);
+            return (tokenResponse);
         } catch (AuthenticationException e) {
-            throw new BadCredentialsException("Invalid username or password");
+            throw new BadCredentialsException(customMessageResolver.getMessage(Code.INVALID_USERNAME_OR_PASSWORD));
         }
     }
 
-    public ResponseEntity refreshToken(String username, String refreshToken) {
-        var user = repository.findByUsername(username);
+    @Override
+    public Token refreshToken(String username, String refreshToken) {
+        var user = UserRepositoryPort.findByUsername(username);
 
         var tokenResponse = new Token();
         if (user != null) {
@@ -77,6 +85,6 @@ public class AuthenticationService {
         } else {
             throw new UsernameNotFoundException("Username " + username + " not found!");
         }
-        return ResponseEntity.ok(tokenResponse);
+        return (tokenResponse);
     }
 }

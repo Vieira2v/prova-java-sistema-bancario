@@ -1,8 +1,8 @@
 package com.bruno.sistemabancario.adapter.controller;
 
 import com.bruno.sistemabancario.adapter.dtos.request.UserRequest;
-import com.bruno.sistemabancario.domain.service.AuthenticationService;
-import com.bruno.sistemabancario.domain.service.security.dtos.CredentialsLogin;
+import com.bruno.sistemabancario.application.ports.input.AuthenticationUseCase;
+import com.bruno.sistemabancario.application.service.security.dtos.CredentialsLogin;
 import com.bruno.sistemabancario.domain.utils.ValidationLogin;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -22,7 +22,7 @@ public class UserController {
     private ValidationLogin validationLogin;
 
     @Autowired
-    private AuthenticationService authService;
+    private AuthenticationUseCase authenticationUseCase;
 
     @Operation(summary="Register user",
             description="Register user",
@@ -42,7 +42,7 @@ public class UserController {
             })
     @PostMapping(value = "/register")
     public ResponseEntity registerUser(@RequestBody UserRequest userRequest) {
-        var create = authService.createUser(userRequest);
+        var create = authenticationUseCase.createUser(userRequest);
         return ResponseEntity.ok(create);
     }
 
@@ -70,7 +70,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid client request!");
         }
 
-        return ResponseEntity.ok(authService.loginUser(credentialsLogin));
+        return ResponseEntity.ok(authenticationUseCase.loginUser(credentialsLogin));
     }
 
     @Operation(summary="Refresh token for user.",
@@ -80,8 +80,7 @@ public class UserController {
                     @ApiResponse(description="Success", responseCode="200",
                             content={
                                     @Content(
-                                            mediaType="application/json",
-                                            array=@ArraySchema(schema=@Schema(implementation= UserRequest.class))
+                                            mediaType="application/json"
                                     )
                             }),
                     @ApiResponse(description="Bad Request", responseCode="400", content=@Content),
@@ -97,11 +96,11 @@ public class UserController {
         if (validationLogin.checkIfParamsIsNotNull(username, refreshToken))
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid client request!");
 
-        var token = authService.refreshToken(username, refreshToken);
+        var token = authenticationUseCase.refreshToken(username, refreshToken);
 
         if (token == null) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid client request!");
 
-        return token;
+        return ResponseEntity.ok(token);
     }
 
 }

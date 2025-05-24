@@ -1,4 +1,4 @@
-package com.bruno.sistemabancario.domain.service.security;
+package com.bruno.sistemabancario.application.service.security;
 
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;

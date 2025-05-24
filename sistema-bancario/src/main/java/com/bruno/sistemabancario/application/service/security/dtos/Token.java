@@ -1,4 +1,4 @@
-package com.bruno.sistemabancario.domain.service.security.dtos;
+package com.bruno.sistemabancario.application.service.security.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package com.bruno.sistemabancario.infrastructure.repository;
+package com.bruno.sistemabancario.infrastructure.adapter.persistence;
 
 import com.bruno.sistemabancario.domain.model.User;
 import org.springframework.data.mongodb.repository.MongoRepository;

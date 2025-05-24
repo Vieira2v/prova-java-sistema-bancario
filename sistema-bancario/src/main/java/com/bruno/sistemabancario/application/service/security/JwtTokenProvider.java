@@ -1,4 +1,4 @@
-package com.bruno.sistemabancario.domain.service.security;
+package com.bruno.sistemabancario.application.service.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -6,7 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.bruno.sistemabancario.domain.exceptions.InvalidJwtAuthenticationException;
 import com.bruno.sistemabancario.domain.exceptions.JwtTokenExpiredException;
-import com.bruno.sistemabancario.domain.service.security.dtos.Token;
+import com.bruno.sistemabancario.application.service.security.dtos.Token;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
