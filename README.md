@@ -52,7 +52,7 @@ Para gerar o relatório de cobertura, execute:
 
 ```bash
 mvn clean test
-mvn jacoco:report
+mvn verify
 ```
 
 O relatório será gerado em:
