@@ -1,4 +1,4 @@
-package com.bruno.sistemabancario;
+package com.bruno.sistemabancario.services;
 
 import com.bruno.sistemabancario.adapter.dtos.request.AccountOpeningDTO;
 import com.bruno.sistemabancario.adapter.dtos.response.AccountDTO;

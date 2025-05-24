@@ -17,11 +17,6 @@ public class BankAccountRepositoryAdapter implements BankAccountRepositoryPort {
     }
 
     @Override
-    public Optional<BankAccount> findBalanceById(String id) {
-        return repository.findBalanceById(id);
-    }
-
-    @Override
     public Optional<BankAccount> findByAccountNumber(String accountNumber) {
         return repository.findByAccountNumber(accountNumber);
     }

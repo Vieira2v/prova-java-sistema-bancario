@@ -10,9 +10,6 @@ import java.util.Optional;
 @Repository
 public interface BankAccountRepository extends MongoRepository<BankAccount, String> {
 
-    @Query(value = "{ '_id': ?0 }", fields = "{ 'saldo' : 1 }")
-    Optional<BankAccount> findBalanceById(String id);
-
     @Query(value = "{ 'accountNumber': ?0 }")
     Optional<BankAccount> findByAccountNumber(String accountNumber);
 

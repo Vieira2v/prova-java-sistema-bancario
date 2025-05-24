@@ -1,4 +1,4 @@
-package com.bruno.sistemabancario;
+package com.bruno.sistemabancario.services;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
